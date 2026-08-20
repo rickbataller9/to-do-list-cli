@@ -1,13 +1,17 @@
-#Add these functions:
-    # - Add a task
-    # - List all tasks
-    # - Mark a task complete
-    # - Delete a task
+import json
 
-tasks = [
-    {"task": "buy milk", "done": False},
-    {"task": "email client", "done": True},
-]
+def load_tasks():
+    try:
+        with open("tasks.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+def save_tasks(tasks):
+    with open("tasks.json", "w") as f:
+        json.dump(tasks, f)
+
+tasks = load_tasks()
 
 while True:
     print("Welcome to task manager\n")
@@ -23,11 +27,12 @@ while True:
     if user_choice == 1:
         task = input("Enter the task: ").lower()
         taskDict = {
-            "task": {task},
+            "task": task,
             "done": False
         }
         tasks.append(taskDict)
         print("Task added!")
+        save_tasks(tasks)
 
     elif user_choice == 2:
         print("\nHere's all of your tasks:")
@@ -42,15 +47,18 @@ while True:
         tasks[taskPos - 1]["done"] = True
 
         print("\nTask marked done")
+        save_tasks(tasks)
 
     elif user_choice == 4:
         taskPos = int(input("Enter the task position here: "))
         tasks.pop(taskPos - 1)
 
         print("\nTask Deleted\n")
+        save_tasks(tasks)
 
     elif user_choice == 5:
         print("Bye!")
         break
+
     else:
         print("\nWrong input, try again.\n")
